@@ -7,7 +7,6 @@
 
 using namespace std;
 
-const int MIN_NR = 10, MAX_NR = 99, MIN_LS = 5, MAX_LS = 20;
 class DoublyLinkedList {
 private:
     struct Node {
@@ -28,6 +27,7 @@ public:
         tail = nullptr;
     }
     
+    //This will add customer to back of line
     void push_back(string name) {
         Node* newNode = new Node(name);
         if (!tail)
@@ -38,6 +38,7 @@ public:
             tail = newNode;
         }
     }
+    // This will add VIP customer to front of line
     void push_front(string name) {
         Node* newNode = new Node(name);
         if (!head)
@@ -48,6 +49,8 @@ public:
             head = newNode;
         }
     }
+    
+    //Will remove and return the customer at the front of the line
     string pop_front() {
         if (!head) {
             cout << "List is empty." << endl;
@@ -58,13 +61,14 @@ public:
         if (head->next) {
             head = head->next;
             head->prev = nullptr;
-        }
-        else
+        } else {
             head = tail = nullptr;
+        }
         delete temp;
-        delete name;
+        return name;
     }
     
+    // Will remove customer from the back of the line
     string pop_back() {
         if (!tail) {
             cout << "List is empty." << endl;
@@ -75,11 +79,11 @@ public:
         if (tail->prev) {
             tail = tail->prev;
             tail->next = nullptr;
-        }
-        else
+        } else {
             head = tail = nullptr;
+        }
         delete temp;
-        delete name;
+        return name;
     }
     
     void print() {
@@ -122,8 +126,8 @@ public:
     }
 };
 
-vector <string> load_names(const string&filename) {
-    vector<string> name;
+vector <string> load_names(const string& filename) {
+    vector<string> names;
     ifstream file(filename);
     string name;
     while (file >> name) {
@@ -133,13 +137,14 @@ vector <string> load_names(const string&filename) {
 }
 
 int main() {
-    srand(static_cast<unsigned>time(0)));
+    srand(static_cast<unsigned>(time(0)));
     
     DoublyLinkedList line;
     vector <string> name = load_names("names.txt");
     
     cout << "Store opens: " << endl;
     
+    // this will add 5 additional customers
     for (int i = 0; i < 5; ++i) {
         string customer = names[rand() % names.size()];
         line.push_back(customer);
@@ -151,25 +156,38 @@ int main() {
     for (int time = 0; time <= 20; ++time) {
         cout << "Time step #" << time << ":" << endl;
         
+        // 40% chance that first customer is served
+        int prob = rand() % 100 + 1;
+        if (prob <= 40 && !line.is_empty()) {
+            string served_customer = line.pop_front();
+            cout << served_customer << " is served" << endl;
+        }
+        
         //60% chance of new customer joining end of the line
-        prob = rand() % 100;
+        prob = rand() % 100 + 1;
         if (prob <= 60) {
             string new_customer = names[rand() % names.size()];
             line.push_back(new_customer);
             cout << new_customer << " joins the line" << endl;
         }
         
-        // 40% chance that first customer is served
-        int prob = rand() % 100;
-        if (prob <= 40 && !line.is_empty()) {
-            string served_customer = line.pop_front();
-            cout << served_customer << " is served" << endl;
+        //20% chance of last customer leaving the line
+        prob = rand() % 100 + 1;
+        if (prob <= 20 && !line.is_empty()) {
+            string last_customer = line.pop_back();
+            cout << last_customer << " (VIP) joined the front of the line" << endl;
+        }
+        
+        //10% chance of VIP customer that will skip to the front of line
+        prob = rand() % 100 + 1;
+        if (prob <= 10) {
+            string vip_customer = names[rand() % names.size()];
+            line.push_front(vip_customer);
+            cout << vip_customer << " (VIP) joined the front of the line" << endl;
         }
         
         
     }
-    
-    cout <<
     
     return 0;
 }
