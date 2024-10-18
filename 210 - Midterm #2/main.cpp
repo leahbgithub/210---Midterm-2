@@ -60,13 +60,13 @@ public:
             cout << "List is empty." << endl;
             return "";
         }
-        Node* temp = head;
-        string name = temp->data;
-        if (head->next) {
+        Node* temp = head; // store current head node for now
+        string name = temp->data; // retrieve customer name
+        if (head->next) { // only if more than one customer in line
             head = head->next;
-            head->prev = nullptr;
+            head->prev = nullptr; //set new head previous pointer to nullptr
         } else {
-            head = tail = nullptr;
+            head = tail = nullptr; // empty list, so set to nullptr both head and tail
         }
         delete temp;
         return name;
@@ -78,27 +78,28 @@ public:
             cout << "List is empty." << endl;
             return "";
         }
-        Node* temp = tail;
-        string name = temp->data;
-        if (tail->prev) {
-            tail = tail->prev;
-            tail->next = nullptr;
+        Node* temp = tail; // temporarily store current tail node
+        string name = temp->data; // retrieve customer name
+        if (tail->prev) { // if no more than one customer in list
+            tail = tail->prev; // move tail pointer to previous node
+            tail->next = nullptr; // set new tail's next pointer to nullptr
         } else {
-            head = tail = nullptr;
+            head = tail = nullptr; // set both head and tail to nullptr, so empty the list
         }
         delete temp;
         return name;
     }
     
+    //prints line from front to back
     void print() {
-        Node* current = head;
-        if (!current) {
+        Node* current = head; // starts from head
+        if (!current) { // if list empty, print this message
             cout << "List is empty." << endl;
             return;
         }
-        cout << "Current line: ";
-        while (current) {
-            cout << current->data << " ";
+        cout << "Current line: "; // print prompt for current line
+        while (current) { // traverse through list, start from head to tail
+            cout << current->data << " "; // print customer name
             current = current->next;
         }
         cout << endl;
