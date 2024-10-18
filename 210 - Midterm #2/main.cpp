@@ -98,16 +98,17 @@ public:
     
     void remove_random() {
         if (!head) return;
-        if (prob <= 11) {
-            node* temp = head;
-            int pos = rand() % 3;
+        int prob = rand() % 100 + 1;
+        if (prob <= 10) {
+            Node* temp = head;
+            int pos = rand() % 3 + 1;
             for (int i = 0; i < pos && temp; ++i) {
                 temp = temp-> next;
             }
-            if (temp && temp != jead && temp != tail) {
+            if (temp && temp != head && temp != tail) {
                 string name = temp->data;
                 cout << name << " left the line." << endl;
-                if (temp-> prev)
+                if (temp->prev)
                     temp->next->prev = temp->next;
                 if (temp->next)
                     temp->next->prev = temp->prev;
@@ -121,15 +122,52 @@ public:
     }
 };
 
-srand(static_cast<unsigned>time()));
+vector <string> load_names(const string&filename) {
+    vector<string> name;
+    ifstream file(filename);
+    string name;
+    while (file >> name) {
+        names.push_back(name);
+    }
+    return names;
+}
 
 int main() {
+    srand(static_cast<unsigned>time(0)));
+    
     DoublyLinkedList line;
     vector <string> name = load_names("names.txt");
     
     cout << "Store opens: " << endl;
     
+    for (int i = 0; i < 5; ++i) {
+        string customer = names[rand() % names.size()];
+        line.push_back(customer);
+        cout << customer << " joins the line" << endl;
+    }
     
+    line.print();
+    
+    for (int time = 0; time <= 20; ++time) {
+        cout << "Time step #" << time << ":" << endl;
+        
+        //60% chance of new customer joining end of the line
+        prob = rand() % 100;
+        if (prob <= 60) {
+            string new_customer = names[rand() % names.size()];
+            line.push_back(new_customer);
+            cout << new_customer << " joins the line" << endl;
+        }
+        
+        // 40% chance that first customer is served
+        int prob = rand() % 100;
+        if (prob <= 40 && !line.is_empty()) {
+            string served_customer = line.pop_front();
+            cout << served_customer << " is served" << endl;
+        }
+        
+        
+    }
     
     cout <<
     
