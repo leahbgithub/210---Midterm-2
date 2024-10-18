@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -99,11 +100,38 @@ public:
         if (!head) return;
         if (prob <= 11) {
             node* temp = head;
-            int pos = rand() % 3 + 1;
+            int pos = rand() % 3;
+            for (int i = 0; i < pos && temp; ++i) {
+                temp = temp-> next;
+            }
+            if (temp && temp != jead && temp != tail) {
+                string name = temp->data;
+                cout << name << " left the line." << endl;
+                if (temp-> prev)
+                    temp->next->prev = temp->next;
+                if (temp->next)
+                    temp->next->prev = temp->prev;
+                delete temp;
+            }
         }
     }
+    
+    bool is_empty() {
+        return head == nullptr;
+    }
 };
+
+srand(static_cast<unsigned>time()));
+
 int main() {
-    cout << MIN_NR + MIN_LS + MAX_NR + MAX_LS; // dummy statement to avoid compiler warning
+    DoublyLinkedList line;
+    vector <string> name = load_names("names.txt");
+    
+    cout << "Store opens: " << endl;
+    
+    
+    
+    cout <<
+    
     return 0;
 }
