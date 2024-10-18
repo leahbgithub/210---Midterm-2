@@ -106,89 +106,94 @@ public:
     
     // this will remove random customer from middle of line (10% chance)
     void remove_random() {
-        if (!head) return;
-        int prob = rand() % 100 + 1;
-        if (prob <= 10) {
-            Node* temp = head;
-            int pos = rand() % 3 + 1;
-            for (int i = 0; i < pos && temp; ++i) {
+        if (!head) return; //if list empty, dont do anything
+        int prob = rand() % 100 + 1; // generate random number between 1 and 100
+        if (prob <= 10) { // less than or equal to 100, remove customer
+            Node* temp = head; // start from head
+            int pos = rand() % 3 + 1; // generate random position between 1 and 3
+            for (int i = 0; i < pos && temp; ++i) { // move selected position in list
                 temp = temp-> next;
             }
-            if (temp && temp != head && temp != tail) {
-                string name = temp->data;
-                cout << name << " left the line." << endl;
-                if (temp->prev)
+            if (temp && temp != head && temp != tail) { // make sure head or tail isnt remove
+                string name = temp->data; // get name of customer that leaves
+                cout << name << " left the line." << endl; // print customer left the line
+                if (temp->prev) // update previous nodes pointer
                     temp->next->prev = temp->next;
-                if (temp->next)
+                if (temp->next) // update next nodes previous pointer
                     temp->next->prev = temp->prev;
-                delete temp;
+                delete temp; // free memory
             }
         }
     }
     
+    //will check if list empty
     bool is_empty() {
-        return head == nullptr;
+        return head == nullptr; // return true if head is nullptr which means list empty
     }
 };
 
+// this function will load names from file into a vector
 vector <string> load_names(const string& filename) {
-    vector<string> names;
-    ifstream file(filename);
-    string name;
-    while (file >> name) {
+    vector<string> names; // create empty vector for storing names
+    ifstream file(filename); // open file with list of names
+    string name; // temporary string to hold each name
+    while (file >> name) { // read names from file
         names.push_back(name);
     }
-    return names;
+    return names; // return vector of names
 }
 
+// main program
 int main() {
-    srand(static_cast<unsigned>(time(0)));
+    srand(static_cast<unsigned>(time(0))); // seed random number generator with time
     
-    DoublyLinkedList line;
-    vector <string> name = load_names("names.txt");
+    DoublyLinkedList line; // create empty doubly linked list for coffee line
+    
+    vector <string> names = load_names("names.txt"); // will load customer names from file
     
     cout << "Store opens: " << endl;
     
     // this will add 5 additional customers
     for (int i = 0; i < 5; ++i) {
-        string customer = names[rand() % names.size()];
-        line.push_back(customer);
-        cout << customer << " joins the line" << endl;
+        string customer = names[rand() % names.size()]; // select random customer name
+        line.push_back(customer); // adds customer to end of line
+        cout << customer << " joins the line" << endl; //prints customer joined the line
     }
     
-    line.print();
+    line.print(); // print current line
     
+    // 20 time periods in minutes need to be created
     for (int time = 1; time <= 20; ++time) {
         cout << "Time step #" << time << ":" << endl;
         
         // 40% chance that first customer is served
-        int prob = rand() % 100 + 1;
-        if (prob <= 40 && !line.is_empty()) {
-            string served_customer = line.pop_front();
-            cout << served_customer << " is served" << endl;
+        int prob = rand() % 100 + 1; // generate random number between 1 and 100
+        if (prob <= 40 && !line.is_empty()) { // if random number is less than or equal to 40 and line isnt empty
+            string served_customer = line.pop_front(); // first customer done
+            cout << served_customer << " is served" << endl; // print customer served
         }
         
         //60% chance of new customer joining end of the line
-        prob = rand() % 100 + 1;
+        prob = rand() % 100 + 1; // generate random number
         if (prob <= 60) {
-            string new_customer = names[rand() % names.size()];
-            line.push_back(new_customer);
-            cout << new_customer << " joins the line" << endl;
+            string new_customer = names[rand() % names.size()]; // select random customer name
+            line.push_back(new_customer); // add customer to end of line
+            cout << new_customer << " joins the line" << endl; // print customer joined the line
         }
         
         //20% chance of last customer leaving the line
         prob = rand() % 100 + 1;
         if (prob <= 20 && !line.is_empty()) {
-            string last_customer = line.pop_back();
-            cout << last_customer << " at the end has left the line" << endl;
+            string last_customer = line.pop_back(); // remove last customer from line
+            cout << last_customer << " at the end has left the line" << endl; // prints
         }
         
         //10% chance of VIP customer that will skip to the front of line
         prob = rand() % 100 + 1;
         if (prob <= 10) {
-            string vip_customer = names[rand() % names.size()];
-            line.push_front(vip_customer);
-            cout << vip_customer << " (VIP) joined the front of the line" << endl;
+            string vip_customer = names[rand() % names.size()]; // select VIP customer at random
+            line.push_front(vip_customer); // add VIP to the front
+            cout << vip_customer << " (VIP) joined the front of the line" << endl; // Print VIP joined
         }
         
         // 10% chance that a customer leaves the line at random
@@ -197,5 +202,5 @@ int main() {
         line.print(); // Will print current line at end of the time step
     }
     
-    return 0;
+    return 0; // terminate the program
 }
