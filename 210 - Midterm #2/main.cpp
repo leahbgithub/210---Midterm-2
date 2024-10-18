@@ -1,38 +1,42 @@
 // 210 - Midterm #2 - Leah Balakrishnan
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <vector>
-#include <fstream>
+#include <iostream> // This is for input/output
+#include <cstdlib> // rand() for random numbers
+#include <ctime> // to seed random number with time
+#include <vector> // store list of customer names
+#include <fstream> // file input operations for reading customer names
 
 using namespace std;
 
+// class which will represent doubly linked list of coffee shop line
 class DoublyLinkedList {
 private:
+    // node structure which will represent the customer in the line
     struct Node {
-        string data;
-        Node* prev;
-        Node* next;
+        string data; // customer name stored as string
+        Node* prev; // pointer to previous node in list
+        Node* next; // pointer to next node in list
+        // node constructor which will intitialize data and maaybe the prev and next pointers
         Node(string val, Node* p = nullptr, Node* n = nullptr) {
             data = val;
             prev = p;
             next = n;
         }
     };
-    Node* head;
-    Node* tail;
+    Node* head; // points to first node
+    Node* tail; // points to last node
 public:
+    //constructor which will intialize empty doubly linked list
     DoublyLinkedList() {
-        head = nullptr;
-        tail = nullptr;
+        head = nullptr; // sets head to nullptr
+        tail = nullptr; // sets tail to nullptr
     }
     
     //This will add customer to back of line
     void push_back(string name) {
-        Node* newNode = new Node(name);
-        if (!tail)
-            head = tail = newNode;
-        else {
+        Node* newNode = new Node(name); // create new node for customer
+        if (!tail) // if list empty, both head and tail will point to new node
+            head = tail = newNode; // set head to new node
+        else { // link new node to current tail
             tail->next = newNode;
             newNode->prev = tail;
             tail = newNode;
@@ -40,10 +44,10 @@ public:
     }
     // This will add VIP customer to front of line
     void push_front(string name) {
-        Node* newNode = new Node(name);
-        if (!head)
+        Node* newNode = new Node(name); // create new node for VIP
+        if (!head) // if list empty, head and tail will go to new node
             head = tail = newNode;
-        else {
+        else { // link new node to current head
             newNode->next = head;
             head->prev = newNode;
             head = newNode;
@@ -100,6 +104,7 @@ public:
         cout << endl;
     }
     
+    // this will remove random customer from middle of line (10% chance)
     void remove_random() {
         if (!head) return;
         int prob = rand() % 100 + 1;
@@ -153,7 +158,7 @@ int main() {
     
     line.print();
     
-    for (int time = 0; time <= 20; ++time) {
+    for (int time = 1; time <= 20; ++time) {
         cout << "Time step #" << time << ":" << endl;
         
         // 40% chance that first customer is served
@@ -175,7 +180,7 @@ int main() {
         prob = rand() % 100 + 1;
         if (prob <= 20 && !line.is_empty()) {
             string last_customer = line.pop_back();
-            cout << last_customer << " (VIP) joined the front of the line" << endl;
+            cout << last_customer << " at the end has left the line" << endl;
         }
         
         //10% chance of VIP customer that will skip to the front of line
@@ -186,7 +191,10 @@ int main() {
             cout << vip_customer << " (VIP) joined the front of the line" << endl;
         }
         
+        // 10% chance that a customer leaves the line at random
+        line.remove_random();
         
+        line.print(); // Will print current line at end of the time step
     }
     
     return 0;
